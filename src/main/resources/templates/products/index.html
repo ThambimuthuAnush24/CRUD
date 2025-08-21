@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BestStore - Products</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .alert-message {
+            transition: opacity 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center">
+<div class="w-full max-w-7xl">
+    <!-- Header -->
+    <h1 class="text-3xl font-bold my-6 text-center">Products</h1>
+
+    <!-- Flash Messages -->
+    <div th:if="${message}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4 mx-4 alert-message" role="alert" id="successMessage">
+        <span class="block sm:inline" th:text="${message}"></span>
+    </div>
+    <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 mx-4 alert-message" role="alert" id="errorMessage">
+        <span class="block sm:inline" th:text="${error}"></span>
+    </div>
+
+    <!-- Button aligned left -->
+    <div class="w-full flex justify-between items-center px-4 mb-6">
+        <a href="/products/create"
+           class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md shadow">
+            Create Product
+        </a>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 px-4">
+        <div th:each="product : ${products}" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+            <div class="p-4">
+                <!-- Product Image -->
+                <div class="flex justify-center mb-4">
+                    <img th:if="${product.imageFileName}" th:src="@{'/images/' + ${product.imageFileName}}"
+                         alt="Product Image"
+                         class="w-32 h-32 object-contain">
+                    <div th:unless="${product.imageFileName}" class="w-32 h-32 bg-gray-200 flex items-center justify-center">
+                        <i class="fas fa-image text-gray-400 text-4xl"></i>
+                    </div>
+                </div>
+
+                <!-- Product Details -->
+                <div class="space-y-2">
+                    <div>
+                        <span class="font-semibold">ID:</span>
+                        <span th:text="${product.id}"></span>
+                    </div>
+                    <h3 class="text-lg font-bold" th:text="${product.name}"></h3>
+                    <div class="flex justify-between">
+                        <span class="text-sm text-gray-600" th:text="${product.brand}"></span>
+                        <span class="text-sm text-gray-600" th:text="${product.category}"></span>
+                    </div>
+                    <div class="text-xl font-bold text-blue-600" th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></div>
+                    <div class="text-sm text-gray-500" th:text="${#temporals.format(product.createdAt, 'yyyy-MM-dd')}"></div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-4 flex space-x-2">
+                    <a th:href="@{/products/edit(id=${product.id})}"
+                       class="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-center py-1 px-3 rounded text-sm">
+                        Edit
+                    </a>
+                    <a th:href="@{/products/delete(id=${product.id})}"
+                       onclick="return confirm('Are you sure you want to delete this product?')"
+                       class="flex-1 bg-red-500 hover:bg-red-600 text-white text-center py-1 px-3 rounded text-sm">
+                        Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto-hide flash messages after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+
+        function hideMessage(element) {
+            if (element) {
+                setTimeout(() => {
+                    element.style.opacity = '0';
+                    setTimeout(() => element.remove(), 500);
+                }, 5000);
+            }
+        }
+
+        hideMessage(successMessage);
+        hideMessage(errorMessage);
+    });
+</script>
+</body>
+</html>
