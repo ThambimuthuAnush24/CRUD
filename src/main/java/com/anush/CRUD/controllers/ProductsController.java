@@ -195,7 +195,7 @@ public class ProductsController {
         if (image == null || image.isEmpty()) {
             return null;
         }
-
+        
         try {
             String originalFileName = image.getOriginalFilename();
             String fileExtension = "";
