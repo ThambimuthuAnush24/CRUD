@@ -35,9 +35,17 @@ public class ProductsController {
         this.repo = repo;
     }
 
-    @GetMapping({"", "/"})
-    public String showProductList(Model model) {
-        List<Product> products = repo.findAll();
+    @GetMapping({ "", "/" })
+    public String showProductList(Model model, @RequestParam(required = false) String keyword) {
+        List<Product> products;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            products = repo.searchProducts(keyword);
+            model.addAttribute("keyword", keyword);
+        } else {
+            products = repo.findAll();
+        }
+
         model.addAttribute("products", products);
         return "products/index";
     }
@@ -195,7 +203,7 @@ public class ProductsController {
         if (image == null || image.isEmpty()) {
             return null;
         }
-        
+
         try {
             String originalFileName = image.getOriginalFilename();
             String fileExtension = "";
