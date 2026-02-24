@@ -95,6 +95,20 @@ public class ProductsController {
         return "redirect:/products";
     }
 
+    @GetMapping("/view")
+    public String showViewPage(Model model, @RequestParam int id) {
+        try {
+            Optional<Product> optionalProduct = repo.findById(id);
+            if (optionalProduct.isPresent()) {
+                model.addAttribute("product", optionalProduct.get());
+                return "products/ViewProduct";
+            }
+        } catch (Exception ex) {
+            System.out.println("Exception: " + ex.getMessage());
+        }
+        return "redirect:/products";
+    }
+
     @GetMapping("/edit")
     public String showEditPage(Model model, @RequestParam int id) {
         try {

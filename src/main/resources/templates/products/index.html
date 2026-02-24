@@ -140,7 +140,13 @@
                 <span class="font-semibold">ID:</span>
                 <span th:text="${product.id}"></span>
               </div>
-              <h3 class="text-lg font-bold" th:text="${product.name}"></h3>
+              <h3 class="text-lg font-bold">
+                <a
+                  th:href="@{/products/view(id=${product.id})}"
+                  class="hover:text-blue-600 transition-colors"
+                  th:text="${product.name}"
+                ></a>
+              </h3>
               <div class="flex justify-between">
                 <span
                   class="text-sm text-gray-600"
@@ -163,6 +169,12 @@
 
             <!-- Action Buttons -->
             <div class="mt-4 flex space-x-2">
+              <a
+                th:href="@{/products/view(id=${product.id})}"
+                class="flex-1 bg-green-500 hover:bg-green-600 text-white text-center py-1 px-3 rounded text-sm"
+              >
+                View
+              </a>
               <a
                 th:href="@{/products/edit(id=${product.id})}"
                 class="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-center py-1 px-3 rounded text-sm"
