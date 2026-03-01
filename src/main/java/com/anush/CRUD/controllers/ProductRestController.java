@@ -31,9 +31,9 @@ public class ProductRestController {
     @GetMapping
     public ResponseEntity<Map<String, Object>> getAllProducts(
             @RequestParam(required = false) String keyword) {
-        
+
         List<Product> products;
-        
+
         if (keyword != null && !keyword.trim().isEmpty()) {
             products = repo.searchProducts(keyword);
         } else {
@@ -54,9 +54,9 @@ public class ProductRestController {
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getProductById(@PathVariable int id) {
         Optional<Product> product = repo.findById(id);
-        
+
         Map<String, Object> response = new HashMap<>();
-        
+
         if (product.isPresent()) {
             response.put("success", true);
             response.put("data", product.get());
@@ -74,7 +74,7 @@ public class ProductRestController {
     @PostMapping
     public ResponseEntity<Map<String, Object>> createProduct(@RequestBody Product product) {
         Map<String, Object> response = new HashMap<>();
-        
+
         try {
             // Validate required fields
             if (product.getName() == null || product.getName().trim().isEmpty()) {
@@ -91,11 +91,11 @@ public class ProductRestController {
 
             product.setCreatedAt(LocalDateTime.now());
             Product savedProduct = repo.save(product);
-            
+
             response.put("success", true);
             response.put("message", "Product created successfully");
             response.put("data", savedProduct);
-            
+
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
             response.put("success", false);
@@ -111,12 +111,12 @@ public class ProductRestController {
     public ResponseEntity<Map<String, Object>> updateProduct(
             @PathVariable int id,
             @RequestBody Product productDetails) {
-        
+
         Map<String, Object> response = new HashMap<>();
-        
+
         try {
             Optional<Product> optionalProduct = repo.findById(id);
-            
+
             if (!optionalProduct.isPresent()) {
                 response.put("success", false);
                 response.put("message", "Product not found with id: " + id);
@@ -124,7 +124,7 @@ public class ProductRestController {
             }
 
             Product product = optionalProduct.get();
-            
+
             // Update fields
             if (productDetails.getName() != null) {
                 product.setName(productDetails.getName());
@@ -143,11 +143,11 @@ public class ProductRestController {
             }
 
             Product updatedProduct = repo.save(product);
-            
+
             response.put("success", true);
             response.put("message", "Product updated successfully");
             response.put("data", updatedProduct);
-            
+
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("success", false);
@@ -162,10 +162,10 @@ public class ProductRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, Object>> deleteProduct(@PathVariable int id) {
         Map<String, Object> response = new HashMap<>();
-        
+
         try {
             Optional<Product> product = repo.findById(id);
-            
+
             if (!product.isPresent()) {
                 response.put("success", false);
                 response.put("message", "Product not found with id: " + id);
@@ -173,10 +173,10 @@ public class ProductRestController {
             }
 
             repo.deleteById(id);
-            
+
             response.put("success", true);
             response.put("message", "Product deleted successfully");
-            
+
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("success", false);
@@ -191,7 +191,7 @@ public class ProductRestController {
     @GetMapping("/category/{category}")
     public ResponseEntity<Map<String, Object>> getProductsByCategory(@PathVariable String category) {
         List<Product> products = repo.searchProducts(category);
-        
+
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
         response.put("category", category);
@@ -207,32 +207,32 @@ public class ProductRestController {
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Object>> getProductStats() {
         List<Product> allProducts = repo.findAll();
-        
+
         Map<String, Object> response = new HashMap<>();
         Map<String, Object> stats = new HashMap<>();
-        
+
         stats.put("totalProducts", allProducts.size());
-        
+
         if (!allProducts.isEmpty()) {
             double totalValue = allProducts.stream()
                     .mapToDouble(Product::getPrice)
                     .sum();
-            
+
             double averagePrice = allProducts.stream()
                     .mapToDouble(Product::getPrice)
                     .average()
                     .orElse(0.0);
-            
+
             double maxPrice = allProducts.stream()
                     .mapToDouble(Product::getPrice)
                     .max()
                     .orElse(0.0);
-            
+
             double minPrice = allProducts.stream()
                     .mapToDouble(Product::getPrice)
                     .min()
                     .orElse(0.0);
-            
+
             stats.put("totalValue", totalValue);
             stats.put("averagePrice", averagePrice);
             stats.put("maxPrice", maxPrice);
@@ -243,10 +243,10 @@ public class ProductRestController {
             stats.put("maxPrice", 0.0);
             stats.put("minPrice", 0.0);
         }
-        
+
         response.put("success", true);
         response.put("data", stats);
-        
+
         return ResponseEntity.ok(response);
     }
 }
