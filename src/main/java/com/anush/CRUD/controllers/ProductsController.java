@@ -20,7 +20,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -47,7 +49,29 @@ public class ProductsController {
         }
 
         model.addAttribute("products", products);
+        model.addAttribute("inventorySummary", buildInventorySummary(products));
         return "products/index";
+    }
+
+    private Map<String, Object> buildInventorySummary(List<Product> products) {
+        Map<String, Object> summary = new HashMap<>();
+        int totalProducts = products.size();
+        double totalValue = products.stream().mapToDouble(Product::getPrice).sum();
+        double averagePrice = totalProducts == 0 ? 0 : totalValue / totalProducts;
+        double highestPrice = totalProducts == 0 ? 0 : products.stream().mapToDouble(Product::getPrice).max().orElse(0.0);
+        Product newestProduct = products.stream()
+                .max((a, b) -> a.getCreatedAt() == null || b.getCreatedAt() == null
+                        ? 0
+                        : a.getCreatedAt().compareTo(b.getCreatedAt()))
+                .orElse(null);
+
+        summary.put("totalProducts", totalProducts);
+        summary.put("totalValue", totalValue);
+        summary.put("averagePrice", averagePrice);
+        summary.put("highestPrice", highestPrice);
+        summary.put("newestProduct", newestProduct);
+
+        return summary;
     }
 
     @GetMapping("/create")
