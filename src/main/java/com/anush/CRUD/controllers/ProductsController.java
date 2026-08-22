@@ -58,7 +58,8 @@ public class ProductsController {
         int totalProducts = products.size();
         double totalValue = products.stream().mapToDouble(Product::getPrice).sum();
         double averagePrice = totalProducts == 0 ? 0 : totalValue / totalProducts;
-        double highestPrice = totalProducts == 0 ? 0 : products.stream().mapToDouble(Product::getPrice).max().orElse(0.0);
+        double highestPrice = totalProducts == 0 ? 0
+                : products.stream().mapToDouble(Product::getPrice).max().orElse(0.0);
         Product newestProduct = products.stream()
                 .max((a, b) -> a.getCreatedAt() == null || b.getCreatedAt() == null
                         ? 0
