@@ -3,120 +3,79 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>BestStore - Product Details</title>
+    <title>BestStore | Product Details</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+      body {
+        background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 35%, #e0f2fe 100%);
+      }
+    </style>
   </head>
-  <body class="bg-gray-100 min-h-screen flex flex-col items-center py-10">
-    <div
-      class="w-full max-w-3xl bg-white rounded-2xl shadow-lg overflow-hidden"
-    >
-      <!-- Header -->
-      <div class="bg-blue-600 px-6 py-4 flex items-center justify-between">
-        <h1 class="text-2xl font-bold text-white">Product Details</h1>
-        <a
-          href="/products"
-          class="text-white hover:text-blue-200 flex items-center gap-1 text-sm"
-        >
-          <i class="fas fa-arrow-left"></i> Back to Products
-        </a>
-      </div>
-
-      <div class="p-6 flex flex-col md:flex-row gap-8">
-        <!-- Product Image -->
-        <div class="flex-shrink-0 flex justify-center md:justify-start">
-          <img
-            th:if="${product.imageFileName}"
-            th:src="@{'/images/' + ${product.imageFileName}}"
-            alt="Product Image"
-            class="w-56 h-56 object-contain rounded-xl border border-gray-200 bg-gray-50 p-2"
-          />
-          <div
-            th:unless="${product.imageFileName}"
-            class="w-56 h-56 bg-gray-200 rounded-xl flex items-center justify-center"
-          >
-            <i class="fas fa-image text-gray-400 text-5xl"></i>
-          </div>
-        </div>
-
-        <!-- Product Info -->
-        <div class="flex-1 space-y-4">
+  <body class="min-h-screen py-10 text-slate-800">
+    <div class="mx-auto max-w-5xl px-4">
+      <div class="overflow-hidden rounded-[28px] border border-white/60 bg-white/80 shadow-2xl shadow-slate-200/70 backdrop-blur-sm">
+        <div class="flex items-center justify-between bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 px-6 py-5 text-white md:px-8">
           <div>
-            <h2
-              class="text-3xl font-bold text-gray-800"
-              th:text="${product.name}"
-            ></h2>
-            <p class="text-gray-500 text-sm mt-1">
-              ID: <span th:text="${product.id}"></span>
-            </p>
+            <p class="text-xs font-semibold uppercase tracking-[0.25em] text-indigo-100">Product</p>
+            <h1 class="mt-2 text-2xl font-black md:text-3xl">Details</h1>
           </div>
+          <a href="/products" class="rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-medium transition hover:bg-white/20">
+            <i class="fas fa-arrow-left mr-2"></i>Back to catalog
+          </a>
+        </div>
 
-          <div class="grid grid-cols-2 gap-4">
-            <div class="bg-gray-50 rounded-lg p-3">
-              <p class="text-xs text-gray-400 uppercase font-semibold">Brand</p>
-              <p
-                class="text-gray-700 font-medium mt-1"
-                th:text="${product.brand}"
-              ></p>
-            </div>
-            <div class="bg-gray-50 rounded-lg p-3">
-              <p class="text-xs text-gray-400 uppercase font-semibold">
-                Category
-              </p>
-              <p
-                class="text-gray-700 font-medium mt-1"
-                th:text="${product.category}"
-              ></p>
-            </div>
-            <div class="bg-gray-50 rounded-lg p-3">
-              <p class="text-xs text-gray-400 uppercase font-semibold">Price</p>
-              <p
-                class="text-blue-600 text-xl font-bold mt-1"
-                th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"
-              ></p>
-            </div>
-            <div class="bg-gray-50 rounded-lg p-3">
-              <p class="text-xs text-gray-400 uppercase font-semibold">
-                Created At
-              </p>
-              <p
-                class="text-gray-700 font-medium mt-1"
-                th:text="${#temporals.format(product.createdAt, 'yyyy-MM-dd HH:mm')}"
-              ></p>
+        <div class="grid gap-8 p-6 md:grid-cols-[0.8fr_1.2fr] md:p-8">
+          <div class="rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 to-indigo-50 p-5">
+            <div class="flex h-full items-center justify-center">
+              <img th:if="${product.imageFileName}" th:src="@{'/images/' + ${product.imageFileName}}" alt="Product Image" class="h-72 w-72 rounded-3xl border border-white bg-white object-contain p-4 shadow-lg shadow-indigo-100" />
+              <div th:unless="${product.imageFileName}" class="flex h-72 w-72 items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-white text-slate-300 shadow-inner">
+                <i class="fas fa-image text-6xl"></i>
+              </div>
             </div>
           </div>
 
-          <!-- Description -->
-          <div class="bg-gray-50 rounded-lg p-4">
-            <p class="text-xs text-gray-400 uppercase font-semibold mb-2">
-              Description
-            </p>
-            <p
-              class="text-gray-700 leading-relaxed"
-              th:text="${product.description}"
-            ></p>
+          <div class="space-y-6">
+            <div>
+              <p class="text-[11px] font-semibold uppercase tracking-[0.25em] text-slate-400">Featured item</p>
+              <h2 class="mt-2 text-3xl font-black text-slate-900" th:text="${product.name}"></h2>
+              <p class="mt-2 text-sm text-slate-500">ID: <span class="font-semibold text-slate-700" th:text="${product.id}"></span></p>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">Brand</p>
+                <p class="mt-2 text-lg font-bold text-slate-800" th:text="${product.brand}"></p>
+              </div>
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">Category</p>
+                <p class="mt-2 text-lg font-bold text-slate-800" th:text="${product.category}"></p>
+              </div>
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">Price</p>
+                <p class="mt-2 text-2xl font-black text-indigo-600" th:text="' $' + ${#numbers.formatDecimal(product.price, 1, 2)}"></p>
+              </div>
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">Created</p>
+                <p class="mt-2 text-lg font-bold text-slate-800" th:text="${#temporals.format(product.createdAt, 'yyyy-MM-dd HH:mm')}"></p>
+              </div>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">Description</p>
+              <p class="mt-3 leading-relaxed text-slate-700" th:text="${product.description}"></p>
+            </div>
+
+            <div class="flex flex-wrap gap-3 pt-2">
+              <a th:href="@{/products/edit(id=${product.id})}" class="inline-flex items-center gap-2 rounded-xl bg-blue-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-600">
+                <i class="fas fa-pen"></i>Edit
+              </a>
+              <a th:href="@{/products/delete(id=${product.id})}" onclick="return confirm('Are you sure you want to delete this product?')" class="inline-flex items-center gap-2 rounded-xl bg-rose-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-rose-600">
+                <i class="fas fa-trash"></i>Delete
+              </a>
+            </div>
           </div>
         </div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="px-6 pb-6 flex gap-3">
-        <a
-          th:href="@{/products/edit(id=${product.id})}"
-          class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-6 py-2 rounded-lg shadow flex items-center gap-2"
-        >
-          <i class="fas fa-pen"></i> Edit
-        </a>
-        <a
-          th:href="@{/products/delete(id=${product.id})}"
-          onclick="return confirm('Are you sure you want to delete this product?')"
-          class="bg-red-500 hover:bg-red-600 text-white font-medium px-6 py-2 rounded-lg shadow flex items-center gap-2"
-        >
-          <i class="fas fa-trash"></i> Delete
-        </a>
       </div>
     </div>
   </body>
