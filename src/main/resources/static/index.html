@@ -1,217 +1,223 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>BestStore - Products</title>
-        <!-- Tailwind CDN -->
-        <script src="https://cdn.tailwindcss.com"></script>
-        <!-- Font Awesome -->
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        />
-        <style>
-            .alert-message {
-                transition: opacity 0.5s ease-in-out;
-            }
-        </style>
-    </head>
-    <body class="bg-gray-100 min-h-screen flex flex-col items-center">
-        <div class="w-full max-w-7xl">
-            <!-- Header -->
-            <h1 class="text-3xl font-bold my-6 text-center">Products</h1>
-
-            <!-- Flash Messages -->
-            <div
-                th:if="${message}"
-                class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4 mx-4 alert-message"
-                role="alert"
-                id="successMessage"
-            >
-                <span class="block sm:inline" th:text="${message}"></span>
-            </div>
-            <div
-                th:if="${error}"
-                class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 mx-4 alert-message"
-                role="alert"
-                id="errorMessage"
-            >
-                <span class="block sm:inline" th:text="${error}"></span>
-            </div>
-
-            <!-- Search Bar -->
-            <div class="w-full px-4 mb-4">
-                <form action="/products" method="get" class="flex gap-2">
-                    <div class="flex-1 relative">
-                        <input
-                            type="text"
-                            name="keyword"
-                            th:value="${keyword}"
-                            placeholder="Search by name, brand, or category..."
-                            class="w-full px-4 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        <i
-                            class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                        ></i>
-                    </div>
-                    <button
-                        type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-md shadow"
-                    >
-                        <i class="fas fa-search mr-2"></i>Search
-                    </button>
-                    <a
-                        th:if="${keyword}"
-                        href="/products"
-                        class="bg-gray-500 hover:bg-gray-600 text-white font-medium px-6 py-2 rounded-md shadow flex items-center"
-                    >
-                        <i class="fas fa-times mr-2"></i>Clear
-                    </a>
-                </form>
-                <!-- Search Results Info -->
-                <div th:if="${keyword}" class="mt-2 text-sm text-gray-600">
-                    <span
-                        >Showing results for: <strong th:text="${keyword}"></strong
-                    ></span>
-                    <span class="ml-2"
-                        >(<span th:text="${#lists.size(products)}"></span> products
-                        found)</span
-                    >
-                </div>
-            </div>
-
-            <!-- Button aligned left -->
-            <div class="w-full flex justify-between items-center px-4 mb-6">
-                <a
-                    href="/products/create"
-                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md shadow"
-                >
-                    Create Product
-                </a>
-            </div>
-
-            <!-- Product Grid -->
-            <div
-                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 px-4"
-            >
-                <!-- No products message -->
-                <div
-                    th:if="${#lists.isEmpty(products)}"
-                    class="col-span-full text-center py-12"
-                >
-                    <i class="fas fa-box-open text-gray-300 text-6xl mb-4"></i>
-                    <p
-                        class="text-gray-500 text-lg"
-                        th:text="${keyword} ? 'No products found matching your search.' : 'No products available.'"
-                    ></p>
-                    <a
-                        th:if="${keyword}"
-                        href="/products"
-                        class="text-blue-600 hover:text-blue-700 mt-2 inline-block"
-                        >View all products</a
-                    >
-                </div>
-
-                <div
-                    th:each="product : ${products}"
-                    class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-                >
-                    <div class="p-4">
-                        <!-- Product Image -->
-                        <div class="flex justify-center mb-4">
-                            <img
-                                th:if="${product.imageFileName}"
-                                th:src="@{'/images/' + ${product.imageFileName}}"
-                                alt="Product Image"
-                                class="w-32 h-32 object-contain"
-                            />
-                            <div
-                                th:unless="${product.imageFileName}"
-                                class="w-32 h-32 bg-gray-200 flex items-center justify-center"
-                            >
-                                <i class="fas fa-image text-gray-400 text-4xl"></i>
-                            </div>
-                        </div>
-
-                        <!-- Product Details -->
-                        <div class="space-y-2">
-                            <div>
-                                <span class="font-semibold">ID:</span>
-                                <span th:text="${product.id}"></span>
-                            </div>
-                            <h3 class="text-lg font-bold">
-                                <a
-                                    th:href="@{/products/view(id=${product.id})}"
-                                    class="hover:text-blue-600 transition-colors"
-                                    th:text="${product.name}"
-                                ></a>
-                            </h3>
-                            <div class="flex justify-between">
-                                <span
-                                    class="text-sm text-gray-600"
-                                    th:text="${product.brand}"
-                                ></span>
-                                <span
-                                    class="text-sm text-gray-600"
-                                    th:text="${product.category}"
-                                ></span>
-                            </div>
-                            <div
-                                class="text-xl font-bold text-blue-600"
-                                th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"
-                            ></div>
-                            <div
-                                class="text-sm text-gray-500"
-                                th:text="${#temporals.format(product.createdAt, 'yyyy-MM-dd')}"
-                            ></div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="mt-4 flex space-x-2">
-                            <a
-                                th:href="@{/products/view(id=${product.id})}"
-                                class="flex-1 bg-green-500 hover:bg-green-600 text-white text-center py-1 px-3 rounded text-sm"
-                            >
-                                View
-                            </a>
-                            <a
-                                th:href="@{/products/edit(id=${product.id})}"
-                                class="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-center py-1 px-3 rounded text-sm"
-                            >
-                                Edit
-                            </a>
-                            <a
-                                th:href="@{/products/delete(id=${product.id})}"
-                                onclick="return confirm('Are you sure you want to delete this product?')"
-                                class="flex-1 bg-red-500 hover:bg-red-600 text-white text-center py-1 px-3 rounded text-sm"
-                            >
-                                Delete
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BestStore | Smart Shopping</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 30%, #ecfeff 100%);
+      }
+      .glass {
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(10px);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen text-slate-800">
+    <header class="sticky top-0 z-50 border-b border-white/60 bg-white/70 backdrop-blur-xl">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 to-cyan-500 text-lg font-bold text-white shadow-lg shadow-indigo-200">
+            B
+          </div>
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.25em] text-indigo-500">BestStore</p>
+            <p class="text-sm font-medium text-slate-600">Smart essentials</p>
+          </div>
         </div>
 
-        <script>
-            // Auto-hide flash messages after 5 seconds
-            document.addEventListener("DOMContentLoaded", function () {
-                const successMessage = document.getElementById("successMessage");
-                const errorMessage = document.getElementById("errorMessage");
+        <nav class="hidden items-center gap-8 text-sm font-medium text-slate-600 md:flex">
+          <a href="#features" class="transition hover:text-indigo-600">Features</a>
+          <a href="#catalog" class="transition hover:text-indigo-600">Catalog</a>
+          <a href="#about" class="transition hover:text-indigo-600">About</a>
+        </nav>
 
-                function hideMessage(element) {
-                    if (element) {
-                        setTimeout(() => {
-                            element.style.opacity = "0";
-                            setTimeout(() => element.remove(), 500);
-                        }, 5000);
-                    }
-                }
+        <div class="flex items-center gap-3">
+          <a href="/products" class="hidden rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-indigo-200 hover:text-indigo-600 sm:inline-flex">
+            Open catalog
+          </a>
+          <a href="/products/create" class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-indigo-600 to-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:-translate-y-0.5 hover:shadow-xl">
+            <i class="fas fa-plus"></i>
+            Add product
+          </a>
+        </div>
+      </div>
+    </header>
 
-                hideMessage(successMessage);
-                hideMessage(errorMessage);
-            });
-        </script>
-    </body>
+    <main>
+      <section class="mx-auto max-w-7xl px-4 pb-16 pt-14 sm:px-6 lg:px-8 lg:pt-20">
+        <div class="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
+          <div>
+            <span class="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-700">
+              <i class="fas fa-bolt"></i>
+              New collection
+            </span>
+            <h1 class="mt-6 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+              Upgrade your <span class="text-indigo-600">daily essentials</span>
+            </h1>
+            <p class="mt-6 max-w-xl text-lg leading-8 text-slate-600">
+              Discover modern electronics, everyday gadgets, and premium accessories designed to keep your life organized, connected, and efficient.
+            </p>
+
+            <div class="mt-8 flex flex-col gap-4 sm:flex-row">
+              <a href="/products" class="inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-slate-200 transition hover:bg-slate-800">
+                <i class="fas fa-store"></i>
+                Shop now
+              </a>
+              <a href="/products/create" class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3.5 text-base font-semibold text-slate-700 shadow-sm transition hover:border-indigo-200 hover:text-indigo-600">
+                <i class="fas fa-plus-circle"></i>
+                Create listing
+              </a>
+            </div>
+
+            <div class="mt-10 flex flex-wrap gap-6 text-sm text-slate-600">
+              <div class="flex items-center gap-2">
+                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-600"><i class="fas fa-check"></i></span>
+                Fast inventory updates
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-cyan-100 text-cyan-600"><i class="fas fa-shield-alt"></i></span>
+                Secure product management
+              </div>
+            </div>
+          </div>
+
+          <div class="relative">
+            <div class="absolute -left-6 top-10 h-40 w-40 rounded-full bg-indigo-200/70 blur-3xl"></div>
+            <div class="absolute -right-6 bottom-6 h-44 w-44 rounded-full bg-cyan-200/70 blur-3xl"></div>
+            <div class="glass relative overflow-hidden rounded-[32px] border border-white/70 p-5 shadow-[0_30px_80px_rgba(79,70,229,0.12)]">
+              <div class="rounded-[28px] bg-gradient-to-br from-slate-900 via-indigo-900 to-cyan-700 p-6 text-white">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.25em] text-indigo-200">Trending</p>
+                    <h2 class="mt-2 text-2xl font-black">BestSeller Kit</h2>
+                  </div>
+                  <div class="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em]">Hot</div>
+                </div>
+
+                <div class="mt-8 flex items-center justify-center">
+                  <div class="flex h-56 w-56 items-center justify-center rounded-[28px] bg-white/10 shadow-inner ring-1 ring-white/20">
+                    <i class="fas fa-laptop text-7xl text-cyan-200"></i>
+                  </div>
+                </div>
+
+                <div class="mt-8 grid grid-cols-2 gap-4">
+                  <div class="rounded-2xl bg-white/10 p-4">
+                    <p class="text-[10px] uppercase tracking-[0.2em] text-indigo-200">Price</p>
+                    <p class="mt-2 text-2xl font-black">$899</p>
+                  </div>
+                  <div class="rounded-2xl bg-white/10 p-4">
+                    <p class="text-[10px] uppercase tracking-[0.2em] text-indigo-200">Stock</p>
+                    <p class="mt-2 text-2xl font-black">128</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+        <div class="mb-8 text-center">
+          <p class="text-xs font-semibold uppercase tracking-[0.28em] text-indigo-500">Why choose us</p>
+          <h2 class="mt-3 text-3xl font-black text-slate-900">Built for a polished storefront</h2>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-3">
+          <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200">
+            <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-100 text-xl text-indigo-600"><i class="fas fa-boxes-stacked"></i></div>
+            <h3 class="text-xl font-bold text-slate-900">Inventory control</h3>
+            <p class="mt-3 text-slate-600">Track items, prices, stock, and categories with a clear dashboard flow.</p>
+          </div>
+          <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200">
+            <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-xl text-emerald-600"><i class="fas fa-bolt"></i></div>
+            <h3 class="text-xl font-bold text-slate-900">Fast workflow</h3>
+            <p class="mt-3 text-slate-600">Create, edit, and delete products in a streamlined process built for speed.</p>
+          </div>
+          <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200">
+            <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-100 text-xl text-cyan-600"><i class="fas fa-chart-line"></i></div>
+            <h3 class="text-xl font-bold text-slate-900">Smart insights</h3>
+            <p class="mt-3 text-slate-600">See totals, pricing averages, and product momentum at a glance.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="catalog" class="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+        <div class="rounded-[32px] border border-white/60 bg-white/80 p-8 shadow-[0_25px_80px_rgba(15,23,42,0.08)] backdrop-blur-sm">
+          <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.28em] text-indigo-500">Featured catalog</p>
+              <h2 class="mt-3 text-3xl font-black text-slate-900">Explore the collection</h2>
+            </div>
+            <a href="/products" class="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-600 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:-translate-y-0.5 hover:shadow-xl">
+              Browse products
+              <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+
+          <div class="mt-8 grid gap-6 md:grid-cols-3">
+            <div class="overflow-hidden rounded-3xl border border-slate-200 bg-slate-50">
+              <div class="flex h-52 items-center justify-center bg-gradient-to-br from-indigo-50 to-cyan-50 text-6xl text-indigo-500"><i class="fas fa-laptop"></i></div>
+              <div class="p-5">
+                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Laptop</p>
+                <h3 class="mt-2 text-xl font-bold text-slate-900">UltraBook Pro</h3>
+                <p class="mt-2 text-slate-600">Lightweight performance for work and travel.</p>
+                <div class="mt-4 flex items-center justify-between">
+                  <span class="text-2xl font-black text-indigo-600">$1,299</span>
+                  <span class="rounded-full bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-700">In stock</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="overflow-hidden rounded-3xl border border-slate-200 bg-slate-50">
+              <div class="flex h-52 items-center justify-center bg-gradient-to-br from-emerald-50 to-cyan-50 text-6xl text-emerald-500"><i class="fas fa-mobile-alt"></i></div>
+              <div class="p-5">
+                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Mobilephone</p>
+                <h3 class="mt-2 text-xl font-bold text-slate-900">Pulse X</h3>
+                <p class="mt-2 text-slate-600">Advanced camera and all-day battery life.</p>
+                <div class="mt-4 flex items-center justify-between">
+                  <span class="text-2xl font-black text-indigo-600">$899</span>
+                  <span class="rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-700">Popular</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="overflow-hidden rounded-3xl border border-slate-200 bg-slate-50">
+              <div class="flex h-52 items-center justify-center bg-gradient-to-br from-violet-50 to-pink-50 text-6xl text-violet-500"><i class="fas fa-headphones"></i></div>
+              <div class="p-5">
+                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Earphone</p>
+                <h3 class="mt-2 text-xl font-bold text-slate-900">Echo Sound</h3>
+                <p class="mt-2 text-slate-600">Immersive sound with rich clarity and comfort.</p>
+                <div class="mt-4 flex items-center justify-between">
+                  <span class="text-2xl font-black text-indigo-600">$199</span>
+                  <span class="rounded-full bg-rose-100 px-2 py-1 text-xs font-semibold text-rose-700">New</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
+        <div class="rounded-[32px] bg-gradient-to-r from-slate-900 via-indigo-900 to-cyan-700 p-8 text-white shadow-[0_30px_80px_rgba(79,70,229,0.2)] md:p-12">
+          <div class="grid items-center gap-8 lg:grid-cols-[1fr_0.8fr]">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.28em] text-indigo-200">About the catalog</p>
+              <h2 class="mt-3 text-3xl font-black md:text-4xl">A storefront workflow built to scale</h2>
+            </div>
+            <div class="rounded-3xl border border-white/20 bg-white/10 p-5 text-sm leading-7 text-indigo-100">
+              BestStore gives your team a clean way to manage a product catalog, refine listings, and offer a polished shopping experience from a single app.
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
 </html>
