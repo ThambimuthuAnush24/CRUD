@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
       body {
-        background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 35%, #e0f2fe 100%);
+        background: #f5f7fb;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       }
       .input-field {
@@ -27,13 +27,13 @@
   </head>
   <body class="min-h-screen py-10">
     <div class="mx-auto max-w-5xl px-4">
-      <div class="overflow-hidden rounded-[28px] border border-white/60 bg-white/80 shadow-2xl shadow-slate-200/70 backdrop-blur-sm">
-        <div class="flex items-center justify-between bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 px-6 py-5 text-white md:px-8">
+      <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-200/70">
+        <div class="flex items-center justify-between bg-slate-950 px-6 py-5 text-white md:px-8">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.25em] text-indigo-100">Catalog</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Catalog / Edit item</p>
             <h1 class="mt-2 text-2xl font-black md:text-3xl"><i class="fas fa-pen-to-square mr-2"></i>Edit product</h1>
           </div>
-          <a href="/products" class="rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-medium transition hover:bg-white/20">
+          <a href="/products" class="rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium transition hover:bg-white/20">
             <i class="fas fa-arrow-left mr-2"></i>Back
           </a>
         </div>
@@ -113,7 +113,7 @@
               <a href="/products" class="inline-flex flex-1 items-center justify-center rounded-xl border border-slate-200 bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-200">
                 <i class="fas fa-times mr-2"></i>Cancel
               </a>
-              <button type="submit" class="inline-flex flex-1 items-center justify-center rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:shadow-xl">
+              <button type="submit" class="inline-flex flex-1 items-center justify-center rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700 hover:shadow-xl">
                 <i class="fas fa-check mr-2"></i>Update
               </button>
             </div>
