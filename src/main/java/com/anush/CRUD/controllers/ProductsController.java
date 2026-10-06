@@ -38,7 +38,9 @@ public class ProductsController {
     }
 
     @GetMapping({ "", "/" })
-    public String showProductList(Model model, @RequestParam(required = false) String keyword) {
+    public String showProductList(Model model,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String category) {
         List<Product> products;
 
         if (keyword != null && !keyword.trim().isEmpty()) {
@@ -46,6 +48,11 @@ public class ProductsController {
             model.addAttribute("keyword", keyword);
         } else {
             products = repo.findAll();
+        }
+
+        if (category != null && !category.trim().isEmpty()) {
+            products.removeIf(product -> !category.equalsIgnoreCase(product.getCategory()));
+            model.addAttribute("category", category);
         }
 
         model.addAttribute("products", products);
